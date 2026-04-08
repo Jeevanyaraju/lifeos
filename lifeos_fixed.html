@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Life OS — Anyotashi</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Epilogue:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #faf8f0;
+  --bg2: #f5f1e4;
+  --bg3: #ede8d5;
+  --yellow: #f0d96b;
+  --yellow-dark: #c4a f20;
+  --ink: #1a1a14;
+  --ink2: #4a4a3a;
+  --ink3: #8a8a74;
+  --border: rgba(26,26,20,0.1);
+  --border2: rgba(26,26,20,0.18);
+  --fitness: #7eb89a;
+  --finance: #c4932a;
+  --career: #8e82c4;
+  --mental: #5fa8c8;
+  --exp: #c47e82;
+  --rel: #c4956e;
+  --green: #5a9e7a;
+  --red: #c47070;
+  --yellow-acc: #d4b820;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body { height:100%; overflow:hidden; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Epilogue', sans-serif;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+}
+
+/* Celebration overlay */
+.celebrate {
+  position: fixed; inset: 0; z-index: 999;
+  background: rgba(240,217,107,0.96);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s;
+}
+.celebrate.show { opacity: 1; pointer-events: all; }
+.celebrate-emoji { font-size: 64px; margin-bottom: 16px; animation: bounce 0.6s ease infinite alternate; }
+.celebrate-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 600; color: var(--ink); text-align: center; margin-bottom: 8px; }
+.celebrate-sub { font-size: 14px; color: var(--ink2); text-align: center; margin-bottom: 28px; padding: 0 32px; }
+.celebrate-btn { background: var(--ink); color: var(--bg); border: none; border-radius: 50px; padding: 12px 32px; font-family: 'Epilogue', sans-serif; font-size: 14px; cursor: pointer; }
+@keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-12px); } }
+
+/* Header */
+.header {
+  padding: 16px 20px 12px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.header-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.header-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); }
+.header-name span { font-style: italic; color: var(--ink2); }
+.year-chip {
+  background: var(--yellow);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 50px;
+  margin-top: 4px;
+}
+.year-bar-wrap { margin-top: 12px; }
+.year-bar-track { height: 3px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
+.year-bar-fill { height: 100%; background: var(--ink); border-radius: 2px; width: 27%; transition: width 1s ease; }
+.year-labels { display: flex; justify-content: space-between; margin-top: 5px; }
+.year-labels span { font-size: 10px; color: var(--ink3); }
+.year-labels .now { color: var(--ink); font-weight: 500; }
+
+/* Nav */
+.nav {
+  display: flex;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  flex-shrink: 0;
+  scrollbar-width: none;
+}
+.nav::-webkit-scrollbar { display: none; }
+.nav-btn {
+  padding: 10px 18px;
+  font-size: 12px;
+  font-family: 'Epilogue', sans-serif;
+  font-weight: 400;
+  color: var(--ink3);
+  border: none;
+  background: none;
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+.nav-btn.active { color: var(--ink); border-bottom-color: var(--ink); font-weight: 500; }
+
+/* Scroll area */
+.scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.scroll-area::-webkit-scrollbar { display: none; }
+
+/* Pages */
+.page { display: none; padding: 20px; padding-bottom: 40px; }
+.page.active { display: block; }
+
+/* Cards */
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.card-yellow {
+  background: var(--yellow);
+  border: none;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.section-label {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+.section-label:first-child { margin-top: 0; }
+
+/* Big goal card */
+.big-goal-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink2); margin-bottom: 6px; }
+.big-goal-text { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; line-height: 1.3; color: var(--ink); }
+.big-goal-sub { font-size: 12px; color: var(--ink2); margin-top: 8px; line-height: 1.5; }
+
+/* Stats grid */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.stat-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
+.stat-label { font-size: 10px; color: var(--ink3); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 6px; }
+.stat-val { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: var(--ink); line-height: 1; }
+.stat-sub { font-size: 11px; color: var(--ink3); margin-top: 4px; }
+
+/* Category rows */
+.cat-row { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 8px; }
+.cat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.cat-name { font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+.cat-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.cat-pct { font-size: 12px; color: var(--ink3); }
+.prog-track { height: 3px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
+.prog-fill { height: 100%; border-radius: 2px; transition: width 0.8s ease; }
+
+/* Fitness */
+.fit-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 12px; }
+.fit-title { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+.fit-stage { font-size: 11px; color: var(--ink3); margin-bottom: 14px; background: var(--bg2); display: inline-block; padding: 3px 10px; border-radius: 50px; }
+.fit-numbers { display: flex; align-items: center; gap: 0; margin-bottom: 14px; }
+.fit-num-block { flex: 1; text-align: center; }
+.fit-num-big { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 600; line-height: 1; }
+.fit-num-lbl { font-size: 10px; color: var(--ink3); margin-top: 4px; letter-spacing: 0.05em; text-transform: uppercase; }
+.fit-arrow { color: var(--ink3); font-size: 18px; flex-shrink: 0; }
+.fit-prog-track { height: 5px; background: var(--bg3); border-radius: 3px; overflow: hidden; margin-bottom: 14px; }
+.fit-prog-fill { height: 100%; background: var(--fitness); border-radius: 3px; transition: width 0.8s ease; }
+.stage-dots { display: flex; gap: 6px; margin-bottom: 12px; }
+.stage-dot { height: 3px; flex: 1; border-radius: 2px; background: var(--bg3); transition: background 0.3s; }
+.stage-dot.done { background: var(--fitness); }
+
+/* Stopwatch */
+.stopwatch { background: var(--bg2); border-radius: 12px; padding: 14px; margin-bottom: 12px; text-align: center; }
+.sw-display { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 600; color: var(--ink); letter-spacing: 0.05em; line-height: 1; margin-bottom: 14px; }
+.sw-best { font-size: 11px; color: var(--ink3); margin-bottom: 14px; }
+.sw-btns { display: flex; gap: 8px; justify-content: center; }
+.sw-btn { border: 1px solid var(--border2); border-radius: 50px; padding: 10px 24px; font-family: 'Epilogue', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #fff; color: var(--ink); transition: all 0.15s; }
+.sw-btn.start { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.sw-btn:active { transform: scale(0.96); }
+
+/* Step selector */
+.step-select { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.step-btn { border: 1px solid var(--border2); border-radius: 50px; padding: 7px 14px; font-size: 12px; font-family: 'Epilogue', sans-serif; cursor: pointer; background: #fff; color: var(--ink2); transition: all 0.15s; }
+.step-btn.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.step-btn:active { transform: scale(0.96); }
+
+/* Tappable counter */
+.tap-counter { display: flex; align-items: center; justify-content: space-between; background: var(--bg2); border-radius: 12px; padding: 12px 16px; margin-bottom: 10px; }
+.tap-minus, .tap-plus { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border2); background: #fff; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--ink); transition: all 0.15s; }
+.tap-minus:active, .tap-plus:active { transform: scale(0.9); background: var(--bg3); }
+.tap-val { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 600; color: var(--ink); }
+.tap-lbl { font-size: 10px; color: var(--ink3); text-align: center; letter-spacing: 0.05em; text-transform: uppercase; }
+
+/* Update btn */
+.update-btn { width: 100%; background: var(--ink); color: var(--bg); border: none; border-radius: 50px; padding: 13px; font-family: 'Epilogue', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; letter-spacing: 0.02em; transition: opacity 0.2s; }
+.update-btn:active { opacity: 0.8; }
+.update-btn.secondary { background: var(--bg2); color: var(--ink); border: 1px solid var(--border2); }
+
+/* Finance */
+.rent-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 12px; }
+.rent-label { font-size: 11px; color: var(--ink3); margin-bottom: 6px; }
+.rent-amount { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 600; margin-bottom: 14px; }
+.rent-message { border-radius: 10px; padding: 12px 14px; font-size: 13px; line-height: 1.5; margin-bottom: 12px; display: none; }
+.rent-message.positive { background: rgba(90,158,122,0.12); color: var(--green); display: block; }
+.rent-message.negative { background: rgba(196,112,112,0.12); color: var(--red); display: block; }
+.rent-message.neutral { background: var(--bg2); color: var(--ink2); display: block; }
+
+.budget-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--border); }
+.budget-row:last-child { border-bottom: none; }
+.budget-name { font-size: 13px; color: var(--ink2); }
+.budget-amt { font-size: 13px; font-weight: 500; }
+.budget-sub { font-size: 11px; color: var(--ink3); margin-top: 1px; }
+
+.fun-message { background: var(--yellow); border-radius: 14px; padding: 14px; margin-bottom: 12px; font-size: 13px; line-height: 1.6; color: var(--ink); display: none; }
+.fun-message.show { display: block; }
+
+/* Amount input row */
+.amt-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.amt-label { font-size: 13px; color: var(--ink2); white-space: nowrap; }
+.amt-input { flex: 1; background: var(--bg2); border: 1px solid var(--border2); border-radius: 10px; padding: 10px 14px; color: var(--ink); font-family: 'Epilogue', sans-serif; font-size: 15px; font-weight: 500; outline: none; max-width: 140px; }
+.amt-input:focus { border-color: var(--ink); }
+
+/* Expense log */
+.exp-form { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+.exp-input { width: 100%; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; color: var(--ink); font-family: 'Epilogue', sans-serif; font-size: 14px; outline: none; margin-bottom: 10px; }
+.exp-input:focus { border-color: var(--ink); }
+.cat-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.cat-pill { border: 1px solid var(--border2); border-radius: 50px; padding: 6px 14px; font-size: 12px; cursor: pointer; background: #fff; color: var(--ink2); font-family: 'Epilogue', sans-serif; transition: all 0.15s; }
+.cat-pill.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.exp-list { background: #fff; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+.exp-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+.exp-item:last-child { border-bottom: none; }
+.exp-name { font-size: 13px; }
+.exp-meta { font-size: 11px; color: var(--ink3); margin-top: 2px; }
+.exp-amt-neg { font-size: 13px; font-weight: 500; color: var(--red); }
+
+/* Jar */
+.jar { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 8px; }
+.jar-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.jar-name { font-size: 13px; font-weight: 500; }
+.jar-amt { font-size: 13px; color: var(--finance); font-weight: 500; }
+.jar-track { height: 4px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
+.jar-fill { height: 100%; background: var(--finance); border-radius: 2px; transition: width 0.8s; }
+.jar-sub { font-size: 11px; color: var(--ink3); margin-top: 6px; }
+
+/* Learning */
+.streak-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 10px; }
+.streak-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.streak-title { font-size: 14px; font-weight: 500; }
+.streak-sub { font-size: 11px; color: var(--ink3); margin-top: 2px; }
+.streak-flame { font-size: 22px; }
+.streak-count { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; text-align: right; line-height: 1; }
+.streak-count-lbl { font-size: 10px; color: var(--ink3); text-align: right; }
+.streak-dots { display: flex; gap: 4px; margin-bottom: 12px; flex-wrap: wrap; }
+.streak-dot-item { width: 18px; height: 18px; border-radius: 5px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 9px; color: var(--ink3); }
+.streak-dot-item.filled { background: var(--yellow); color: var(--ink); }
+
+/* Course */
+.course-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 10px; }
+.course-badge { font-size: 10px; padding: 3px 10px; border-radius: 50px; background: var(--bg2); color: var(--ink3); display: inline-block; margin-bottom: 8px; }
+.course-title { font-size: 15px; font-weight: 500; margin-bottom: 12px; }
+.course-track { height: 4px; background: var(--bg3); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
+.course-fill { height: 100%; background: var(--mental); border-radius: 2px; transition: width 0.8s; }
+.course-footer { display: flex; justify-content: space-between; font-size: 11px; color: var(--ink3); margin-bottom: 12px; }
+
+/* Habits */
+.habit-row { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+.habit-info .habit-title { font-size: 13px; font-weight: 500; }
+.habit-info .habit-streak { font-size: 11px; color: var(--ink3); margin-top: 3px; }
+.check-circle { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--border2); background: var(--bg2); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: all 0.2s; flex-shrink: 0; }
+.check-circle.done { background: var(--yellow); border-color: var(--yellow-acc); }
+
+/* Toast */
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--ink); color: var(--bg); border-radius: 50px; padding: 10px 22px; font-size: 13px; transition: transform 0.3s; z-index: 100; white-space: nowrap; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* Email btn */
+.email-btn { width: 100%; background: var(--bg2); border: 1px solid var(--border2); border-radius: 50px; padding: 14px; font-family: 'Epilogue', sans-serif; font-size: 13px; color: var(--ink); cursor: pointer; margin-top: 20px; transition: background 0.2s; }
+.email-btn:active { background: var(--bg3); }
+
+.empty-state { text-align: center; padding: 28px; color: var(--ink3); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<!-- Celebration overlay -->
+<div class="celebrate" id="celebrate" onclick="closeCelebrate()">
+  <div class="celebrate-emoji" id="cel-emoji">🏆</div>
+  <div class="celebrate-title" id="cel-title">ughhh finally!</div>
+  <div class="celebrate-sub" id="cel-sub">You're a legend. Superwoman mode: ON.</div>
+  <button class="celebrate-btn">got it 🤍</button>
+</div>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="header-name">Hey, <span>Anyotashi</span> 🤍</div>
+    </div>
+    <div class="year-chip">Apr 2025 · 9M left</div>
+  </div>
+  <div class="year-bar-wrap">
+    <div class="year-bar-track"><div class="year-bar-fill"></div></div>
+    <div class="year-labels">
+      <span>Jan</span><span class="now">Apr ← you</span><span>Dec</span>
+    </div>
+  </div>
+</div>
+
+<!-- Nav -->
+<div class="nav">
+  <button class="nav-btn active" onclick="showPage('home',this)">Home</button>
+  <button class="nav-btn" onclick="showPage('fitness',this)">Fitness</button>
+  <button class="nav-btn" onclick="showPage('finance',this)">Finance</button>
+  <button class="nav-btn" onclick="showPage('learning',this)">Learning</button>
+  <button class="nav-btn" onclick="showPage('habits',this)">Habits</button>
+</div>
+
+<div class="scroll-area">
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+
+  <div class="card-yellow">
+    <div class="big-goal-label">your 2025 — the one thing</div>
+    <div class="big-goal-text">Be fit. Save a decent sum. Become the superwoman you already are.</div>
+    <div class="big-goal-sub">3 months in and you already got a job, saved ₹13k, and joined a gym. loves that for you. 🌻</div>
+  </div>
+
+  <div class="grid2">
+    <div class="stat-card">
+      <div class="stat-label">Total saved</div>
+      <div class="stat-val">₹<span id="h-saved">13,000</span></div>
+      <div class="stat-sub">of ₹72,000 goal</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Days streak</div>
+      <div class="stat-val" id="h-streak">0</div>
+      <div class="stat-sub">best habit streak</div>
+    </div>
+  </div>
+
+  <div class="section-label">your categories</div>
+
+  <div class="cat-row">
+    <div class="cat-header">
+      <div class="cat-name"><div class="cat-dot" style="background:var(--fitness)"></div>Fitness</div>
+      <div class="cat-pct" id="h-fit-pct">—</div>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="h-fit-bar" style="background:var(--fitness);width:0%"></div></div>
+  </div>
+
+  <div class="cat-row">
+    <div class="cat-header">
+      <div class="cat-name"><div class="cat-dot" style="background:var(--finance)"></div>Finance</div>
+      <div class="cat-pct" id="h-fin-pct">18%</div>
+    </div>
+    <div class="prog-track"><div class="prog-fill" style="background:var(--finance);width:18%"></div></div>
+  </div>
+
+  <div class="cat-row">
+    <div class="cat-header">
+      <div class="cat-name"><div class="cat-dot" style="background:var(--career)"></div>Career</div>
+      <div class="cat-pct">40%</div>
+    </div>
+    <div class="prog-track"><div class="prog-fill" style="background:var(--career);width:40%"></div></div>
+  </div>
+
+  <div class="cat-row">
+    <div class="cat-header">
+      <div class="cat-name"><div class="cat-dot" style="background:var(--mental)"></div>Mental / Learning</div>
+      <div class="cat-pct" id="h-learn-pct">0%</div>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="h-learn-bar" style="background:var(--mental);width:0%"></div></div>
+  </div>
+
+  <div class="cat-row">
+    <div class="cat-header">
+      <div class="cat-name"><div class="cat-dot" style="background:var(--exp)"></div>Experiences</div>
+      <div class="cat-pct">25%</div>
+    </div>
+    <div class="prog-track"><div class="prog-fill" style="background:var(--exp);width:25%"></div></div>
+  </div>
+
+  <div class="cat-row">
+    <div class="cat-header">
+      <div class="cat-name"><div class="cat-dot" style="background:var(--rel)"></div>Relationships</div>
+      <div class="cat-pct">50%</div>
+    </div>
+    <div class="prog-track"><div class="prog-fill" style="background:var(--rel);width:50%"></div></div>
+  </div>
+
+  <button class="email-btn" onclick="sendEmail()">✉ send progress update to myself</button>
+</div>
+
+<!-- FITNESS -->
+<div class="page" id="page-fitness">
+
+  <!-- PLANK with stopwatch -->
+  <div class="fit-card">
+    <div class="fit-title">Plank</div>
+    <div class="fit-stage" id="plank-stage-label">Building base strength</div>
+    <div class="stopwatch">
+      <div class="sw-display" id="sw-display">0:00</div>
+      <div class="sw-best">best: <span id="sw-best">2:00</span> · target: 3:00</div>
+      <div class="sw-btns">
+        <button class="sw-btn start" id="sw-start-btn" onclick="toggleStopwatch()">Start</button>
+        <button class="sw-btn" onclick="resetStopwatch()">Reset</button>
+        <button class="sw-btn" onclick="savePlank()">Save best</button>
+      </div>
+    </div>
+    <div class="fit-prog-track"><div class="fit-prog-fill" id="plank-bar" style="width:67%"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin-top:6px">
+      <span>best: <span id="plank-best-lbl">2:00</span></span><span>target: 3:00</span>
+    </div>
+  </div>
+
+  <!-- PUSHUPS -->
+  <div class="fit-card">
+    <div class="fit-title">Pushups</div>
+    <div class="stage-dots" id="push-stage-dots">
+      <div class="stage-dot" id="push-s1"></div>
+      <div class="stage-dot" id="push-s2"></div>
+    </div>
+    <div class="fit-stage" id="push-stage-lbl">Stage 1 · Bent knee</div>
+
+    <div class="section-label" style="margin-top:8px">bent knee (current stage)</div>
+    <div class="tap-counter">
+      <button class="tap-minus" onclick="tapChange('push-bent',-1)">−</button>
+      <div style="text-align:center">
+        <div class="tap-val" id="push-bent-val">12</div>
+        <div class="tap-lbl">reps</div>
+      </div>
+      <button class="tap-plus" onclick="tapChange('push-bent',1)">+</button>
+    </div>
+    <div class="fit-prog-track" style="margin-bottom:6px"><div class="fit-prog-fill" id="push-bent-bar" style="width:60%"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin-bottom:14px"><span>now: <span id="push-bent-now">12</span></span><span>target: 20</span></div>
+
+    <div class="section-label">full pushups (next stage)</div>
+    <div class="tap-counter">
+      <button class="tap-minus" onclick="tapChange('push-full',-1)">−</button>
+      <div style="text-align:center">
+        <div class="tap-val" id="push-full-val">0</div>
+        <div class="tap-lbl">reps</div>
+      </div>
+      <button class="tap-plus" onclick="tapChange('push-full',1)">+</button>
+    </div>
+    <div class="fit-prog-track" style="margin-bottom:6px"><div class="fit-prog-fill" id="push-full-bar" style="width:0%"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin-bottom:14px"><span>now: <span id="push-full-now">0</span></span><span>target: 20</span></div>
+
+    <button class="update-btn" onclick="savePushups()">save pushups</button>
+  </div>
+
+  <!-- PULLUPS -->
+  <div class="fit-card">
+    <div class="fit-title">Pullups</div>
+    <div class="stage-dots" id="pull-stage-dots">
+      <div class="stage-dot" id="pull-s1"></div>
+      <div class="stage-dot" id="pull-s2"></div>
+    </div>
+    <div class="fit-stage" id="pull-stage-lbl">Stage 1 · With support</div>
+
+    <div class="section-label" style="margin-top:8px">with support (current stage)</div>
+    <div class="tap-counter">
+      <button class="tap-minus" onclick="tapChange('pull-support',-1)">−</button>
+      <div style="text-align:center">
+        <div class="tap-val" id="pull-support-val">0</div>
+        <div class="tap-lbl">reps</div>
+      </div>
+      <button class="tap-plus" onclick="tapChange('pull-support',1)">+</button>
+    </div>
+    <div class="fit-prog-track" style="margin-bottom:6px"><div class="fit-prog-fill" id="pull-support-bar" style="width:0%"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin-bottom:14px"><span>now: <span id="pull-support-now">0</span></span><span>target: 10</span></div>
+
+    <div class="section-label">unassisted (next stage)</div>
+    <div class="tap-counter">
+      <button class="tap-minus" onclick="tapChange('pull-free',-1)">−</button>
+      <div style="text-align:center">
+        <div class="tap-val" id="pull-free-val">0</div>
+        <div class="tap-lbl">reps</div>
+      </div>
+      <button class="tap-plus" onclick="tapChange('pull-free',1)">+</button>
+    </div>
+    <div class="fit-prog-track" style="margin-bottom:6px"><div class="fit-prog-fill" id="pull-free-bar" style="width:0%"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin-bottom:14px"><span>now: <span id="pull-free-now">0</span></span><span>target: 10</span></div>
+
+    <button class="update-btn" onclick="savePullups()">save pullups</button>
+  </div>
+
+</div>
+
+<!-- FINANCE -->
+<div class="page" id="page-finance">
+
+  <div class="section-label">room rent this month</div>
+  <div class="rent-card">
+    <div class="rent-label">default ₹9,000 · enter what you actually paid</div>
+    <div class="amt-row">
+      <div class="amt-label">₹</div>
+      <input class="amt-input" id="rent-input" type="number" placeholder="9000" value="">
+      <button class="update-btn" style="flex:1;max-width:100px" onclick="calculateRent()">calculate</button>
+    </div>
+    <div class="rent-message" id="rent-message"></div>
+    <div class="fun-message" id="fun-message"></div>
+  </div>
+
+  <div class="section-label">monthly budget</div>
+  <div class="card">
+    <div class="budget-row">
+      <div><div class="budget-name">Room rent</div></div>
+      <div class="budget-amt" id="budget-rent">₹9,000</div>
+    </div>
+    <div class="budget-row">
+      <div><div class="budget-name">Travel</div></div>
+      <div class="budget-amt">₹1,000</div>
+    </div>
+    <div class="budget-row">
+      <div><div class="budget-name">General savings</div><div class="budget-sub">goes to savings jar</div></div>
+      <div class="budget-amt" style="color:var(--finance)">₹5,000</div>
+    </div>
+    <div class="budget-row">
+      <div><div class="budget-name">Trips fund</div><div class="budget-sub">your next adventure</div></div>
+      <div class="budget-amt" style="color:var(--finance)">₹3,000</div>
+    </div>
+    <div class="budget-row">
+      <div><div class="budget-name">Essentials</div><div class="budget-sub">groceries, food, basics</div></div>
+      <div class="budget-amt">₹3,000</div>
+    </div>
+    <div class="budget-row">
+      <div><div class="budget-name">Flex pool</div><div class="budget-sub">skincare, earpods, cute stuff</div></div>
+      <div class="budget-amt" style="color:var(--green)">₹<span id="flex-amt">3,000</span></div>
+    </div>
+  </div>
+
+  <div class="section-label">log an expense</div>
+  <div class="exp-form">
+    <input class="exp-input" id="exp-what" placeholder="what did you spend on?">
+    <div class="amt-row" style="margin-bottom:10px">
+      <div class="amt-label">₹</div>
+      <input class="amt-input" id="exp-amt" type="number" placeholder="amount">
+    </div>
+    <div class="cat-pills">
+      <div class="cat-pill active" id="pill-Essentials" onclick="selectPill('Essentials')">Essentials</div>
+      <div class="cat-pill" id="pill-Flex" onclick="selectPill('Flex')">Flex pool</div>
+      <div class="cat-pill" id="pill-Trips" onclick="selectPill('Trips')">Trips</div>
+      <div class="cat-pill" id="pill-Savings" onclick="selectPill('Savings')">Savings</div>
+    </div>
+    <button class="update-btn" onclick="addExpense()">add expense</button>
+  </div>
+
+  <div class="section-label">this month's expenses</div>
+  <div class="exp-list" id="exp-list"><div class="empty-state">nothing yet — loves that for your wallet 🌻</div></div>
+
+  <div class="section-label">savings jars</div>
+  <div class="jar">
+    <div class="jar-header">
+      <div class="jar-name">General savings</div>
+      <div class="jar-amt">₹<span id="jar-gen">13,000</span></div>
+    </div>
+    <div class="jar-track"><div class="jar-fill" id="jar-gen-bar" style="width:18%"></div></div>
+    <div class="jar-sub">₹5,000/month · target ₹72,000 · <span id="jar-gen-months">11.8</span> months to go</div>
+  </div>
+  <div class="jar">
+    <div class="jar-header">
+      <div class="jar-name">Trips fund 🌍</div>
+      <div class="jar-amt">₹<span id="jar-trips">0</span></div>
+    </div>
+    <div class="jar-track"><div class="jar-fill" id="jar-trips-bar" style="width:0%"></div></div>
+    <div class="jar-sub">₹3,000/month · building for your next adventure</div>
+  </div>
+  <div class="jar">
+    <div class="jar-header">
+      <div class="jar-name">Flex pool</div>
+      <div class="jar-amt">₹<span id="jar-flex">3,000</span></div>
+    </div>
+    <div class="jar-track"><div class="jar-fill" id="jar-flex-bar" style="width:100%;background:var(--green)"></div></div>
+    <div class="jar-sub">unspent flex rolls over. enjoy it, superwoman.</div>
+  </div>
+</div>
+
+<!-- LEARNING -->
+<div class="page" id="page-learning">
+
+  <div class="section-label">courses</div>
+
+  <div class="course-card">
+    <div class="course-badge">Small course</div>
+    <div class="course-title" id="c1-title">Course name TBD — add it when ready</div>
+    <div class="course-track"><div class="course-fill" id="c1-fill" style="width:0%"></div></div>
+    <div class="course-footer"><span id="c1-pct">0% done</span><span>target: end of year</span></div>
+    <div class="section-label" style="margin-top:4px">how's it going?</div>
+    <div class="step-select" id="c1-steps">
+      <div class="step-btn" onclick="setCourse(1,0,'not started yet')">not started</div>
+      <div class="step-btn" onclick="setCourse(1,25,'just getting into it')">just started</div>
+      <div class="step-btn" onclick="setCourse(1,50,'halfway there!')">halfway</div>
+      <div class="step-btn" onclick="setCourse(1,75,'almost done!')">almost done</div>
+      <div class="step-btn" onclick="setCourse(1,100,'ughhh finally! done!')">done!</div>
+    </div>
+  </div>
+
+  <div class="course-card">
+    <div class="course-badge">Medium course</div>
+    <div class="course-title" id="c2-title">Course name TBD — add it when ready</div>
+    <div class="course-track"><div class="course-fill" id="c2-fill" style="width:0%"></div></div>
+    <div class="course-footer"><span id="c2-pct">0% done</span><span>target: end of year</span></div>
+    <div class="section-label" style="margin-top:4px">how's it going?</div>
+    <div class="step-select">
+      <div class="step-btn" onclick="setCourse(2,0,'not started yet')">not started</div>
+      <div class="step-btn" onclick="setCourse(2,25,'just getting into it')">just started</div>
+      <div class="step-btn" onclick="setCourse(2,50,'halfway there!')">halfway</div>
+      <div class="step-btn" onclick="setCourse(2,75,'almost done!')">almost done</div>
+      <div class="step-btn" onclick="setCourse(2,100,'ughhh finally! done!')">done!</div>
+    </div>
+  </div>
+
+  <div class="course-card">
+    <div class="course-badge" style="background:rgba(240,217,107,0.4);color:var(--finance)">High value course ✦</div>
+    <div class="course-title" id="c3-title">Course name TBD — add it when ready</div>
+    <div class="course-track"><div class="course-fill" id="c3-fill" style="width:0%;background:var(--finance)"></div></div>
+    <div class="course-footer"><span id="c3-pct">0% done</span><span>target: end of year</span></div>
+    <div class="section-label" style="margin-top:4px">how's it going?</div>
+    <div class="step-select">
+      <div class="step-btn" onclick="setCourse(3,0,'not started yet')">not started</div>
+      <div class="step-btn" onclick="setCourse(3,25,'just getting into it')">just started</div>
+      <div class="step-btn" onclick="setCourse(3,50,'halfway there!')">halfway</div>
+      <div class="step-btn" onclick="setCourse(3,75,'almost done!')">almost done</div>
+      <div class="step-btn" onclick="setCourse(3,100,'ughhh finally! done!')">done!</div>
+    </div>
+  </div>
+
+  <div class="section-label">french on duolingo 🇫🇷</div>
+  <div class="streak-card">
+    <div class="streak-header">
+      <div><div class="streak-title">French streak</div><div class="streak-sub">tap every day you practice</div></div>
+      <div><div class="streak-count" id="french-count">0</div><div class="streak-count-lbl">day streak</div></div>
+    </div>
+    <div class="streak-dots" id="french-dots"></div>
+    <button class="update-btn" onclick="addStreak('french')">did my french today 🔥</button>
+  </div>
+
+  <div class="section-label">the secret — book 📖</div>
+  <div class="streak-card">
+    <div class="streak-header">
+      <div><div class="streak-title">The Secret</div><div class="streak-sub">198 pages total</div></div>
+      <div><div class="streak-count" id="book-count">0</div><div class="streak-count-lbl">pages read</div></div>
+    </div>
+    <div class="course-track" style="margin-bottom:8px"><div class="course-fill" id="book-fill" style="width:0%;background:var(--exp)"></div></div>
+    <div style="font-size:11px;color:var(--ink3);margin-bottom:12px"><span id="book-pct">0%</span> through the book</div>
+    <div class="tap-counter" style="margin-bottom:12px">
+      <button class="tap-minus" onclick="tapChange('book',-5)">−5</button>
+      <div style="text-align:center"><div class="tap-val" id="book-tap-val">0</div><div class="tap-lbl">pages</div></div>
+      <button class="tap-plus" onclick="tapChange('book',5)">+5</button>
+    </div>
+    <button class="update-btn" onclick="saveBook()">save reading progress</button>
+  </div>
+
+  <div class="section-label">rubik's cube 🎲</div>
+  <div class="streak-card">
+    <div class="streak-header">
+      <div><div class="streak-title">Rubik's cube</div><div class="streak-sub">keep practising, legend</div></div>
+      <div><div class="streak-count" style="font-size:22px" id="rubik-icon">🔲</div></div>
+    </div>
+    <div class="step-select">
+      <div class="step-btn" id="rb-1" onclick="setRubik(1)">just started</div>
+      <div class="step-btn" id="rb-2" onclick="setRubik(2)">one face done</div>
+      <div class="step-btn" id="rb-3" onclick="setRubik(3)">two faces</div>
+      <div class="step-btn" id="rb-4" onclick="setRubik(4)">almost!</div>
+      <div class="step-btn" id="rb-5" onclick="setRubik(5)">solved! 🎉</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- HABITS -->
+<div class="page" id="page-habits">
+  <div style="font-size:12px;color:var(--ink3);margin-bottom:16px">tap ✓ when you do it today. streaks are everything.</div>
+
+  <div class="habit-row">
+    <div class="habit-info">
+      <div class="habit-title">Call Amma 📞</div>
+      <div class="habit-streak"><span id="amma-streak">0</span> day streak</div>
+    </div>
+    <div class="check-circle" id="amma-check" onclick="toggleHabit('amma')"></div>
+  </div>
+
+  <div class="habit-row">
+    <div class="habit-info">
+      <div class="habit-title">Gym session 💪</div>
+      <div class="habit-streak"><span id="gym-streak">0</span> day streak</div>
+    </div>
+    <div class="check-circle" id="gym-check" onclick="toggleHabit('gym')"></div>
+  </div>
+
+  <div class="habit-row">
+    <div class="habit-info">
+      <div class="habit-title">French on Duolingo 🇫🇷</div>
+      <div class="habit-streak"><span id="duo-streak">0</span> day streak</div>
+    </div>
+    <div class="check-circle" id="duo-check" onclick="toggleHabit('duo')"></div>
+  </div>
+
+  <div id="custom-habit-list"></div>
+
+  <div class="section-label" style="margin-top:20px">add a new habit</div>
+  <div class="card">
+    <input class="exp-input" id="new-habit" placeholder="your new habit..." style="margin-bottom:10px">
+    <button class="update-btn" onclick="addHabit()">add habit</button>
+  </div>
+</div>
+
+</div><!-- end scroll area -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Page nav — defined first so buttons can call it immediately
+window.showPage = function(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// State
+var S = JSON.parse(localStorage.getItem('lifeOS2') || 'null') || {
+  plankBest: 120, swRunning: false, swTime: 0,
+  pushBent: 12, pushFull: 0,
+  pullSupport: 0, pullFree: 0,
+  expenses: [], expCat: 'Essentials',
+  generalSaved: 13000, tripsSaved: 0, flexPool: 3000,
+  rentPaid: 9000,
+  frenchStreak: 0, frenchDays: [],
+  bookPages: 0, bookTap: 0,
+  rubikStage: 0,
+  courses: [0,0,0],
+  habits: {}, habitStreaks: {amma:0, gym:0, duo:0}, habitDone: {},
+  customHabits: []
+};
+var swInterval = null;
+var swRunning = false;
+var swTime = S.swTime || 0;
+
+function save() { localStorage.setItem('lifeOS2', JSON.stringify(S)); }
+
+// Toast
+function toast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Celebrate
+function celebrate(emoji, title, sub) {
+  document.getElementById('cel-emoji').textContent = emoji;
+  document.getElementById('cel-title').textContent = title;
+  document.getElementById('cel-sub').textContent = sub;
+  document.getElementById('celebrate').classList.add('show');
+}
+window.closeCelebrate = function() { document.getElementById('celebrate').classList.remove('show'); }
+
+// Stopwatch
+window.toggleStopwatch = function() {
+  if (swRunning) {
+    clearInterval(swInterval);
+    swRunning = false;
+    document.getElementById('sw-start-btn').textContent = 'Start';
+    document.getElementById('sw-start-btn').classList.add('start');
+  } else {
+    swRunning = true;
+    document.getElementById('sw-start-btn').textContent = 'Stop';
+    document.getElementById('sw-start-btn').classList.remove('start');
+    swInterval = setInterval(() => {
+      swTime++;
+      updateSwDisplay();
+    }, 1000);
+  }
+}
+window.resetStopwatch = function() {
+  clearInterval(swInterval);
+  swRunning = false;
+  swTime = 0;
+  document.getElementById('sw-start-btn').textContent = 'Start';
+  document.getElementById('sw-start-btn').classList.add('start');
+  updateSwDisplay();
+}
+function updateSwDisplay() {
+  var m = Math.floor(swTime/60), s = swTime%60;
+  document.getElementById('sw-display').textContent = m + ':' + (s<10?'0':'') + s;
+}
+window.savePlank = function() {
+  if (swTime > S.plankBest) {
+    S.plankBest = swTime;
+    save();
+    var pct = Math.min(100, Math.round((S.plankBest/180)*100));
+    document.getElementById('plank-bar').style.width = pct+'%';
+    var m=Math.floor(S.plankBest/60),s=S.plankBest%60;
+    var lbl = m+':'+(s<10?'0':'')+s;
+    document.getElementById('sw-best').textContent = lbl;
+    document.getElementById('plank-best-lbl').textContent = lbl;
+    toast('New plank best saved! Legend 💪');
+    if (S.plankBest >= 180) celebrate('🏆','ughhh finally!','3 minute plank — you absolute superwoman. LEGEND.');
+    updateFitDash();
+  } else {
+    toast('Keep going — best is ' + Math.floor(S.plankBest/60) + ':' + (S.plankBest%60<10?'0':'') + S.plankBest%60);
+  }
+}
+
+// Tap counter
+var tapVals = { 'push-bent': S.pushBent, 'push-full': S.pushFull, 'pull-support': S.pullSupport, 'pull-free': S.pullFree, 'book': S.bookPages };
+window.tapChange = function(key, delta) {
+  tapVals[key] = Math.max(0, (tapVals[key]||0) + delta);
+  var el = document.getElementById(key.replace('-','-')+'-val') || document.getElementById(key+'-tap-val');
+  if (key === 'book') { document.getElementById('book-tap-val').textContent = tapVals[key]; return; }
+  document.getElementById(key+'-val').textContent = tapVals[key];
+}
+
+window.savePushups = function() {
+  S.pushBent = tapVals['push-bent'];
+  S.pushFull = tapVals['push-full'];
+  save();
+  var bentPct = Math.min(100, Math.round((S.pushBent/20)*100));
+  var fullPct = Math.min(100, Math.round((S.pushFull/20)*100));
+  document.getElementById('push-bent-bar').style.width = bentPct+'%';
+  document.getElementById('push-full-bar').style.width = fullPct+'%';
+  document.getElementById('push-bent-now').textContent = S.pushBent;
+  document.getElementById('push-full-now').textContent = S.pushFull;
+  if (S.pushBent >= 20) { document.getElementById('push-s1').classList.add('done'); }
+  if (S.pushFull >= 20) {
+    document.getElementById('push-s2').classList.add('done');
+    document.getElementById('push-stage-lbl').textContent = 'Stage 2 · Full pushups';
+    celebrate('💪','got it! LEGEND!','20 full pushups done. Superwoman mode fully activated.');
+  }
+  updateFitDash();
+  toast('Pushups saved!');
+}
+
+window.savePullups = function() {
+  S.pullSupport = tapVals['pull-support'];
+  S.pullFree = tapVals['pull-free'];
+  save();
+  var sPct = Math.min(100, Math.round((S.pullSupport/10)*100));
+  var fPct = Math.min(100, Math.round((S.pullFree/10)*100));
+  document.getElementById('pull-support-bar').style.width = sPct+'%';
+  document.getElementById('pull-free-bar').style.width = fPct+'%';
+  document.getElementById('pull-support-now').textContent = S.pullSupport;
+  document.getElementById('pull-free-now').textContent = S.pullFree;
+  if (S.pullSupport >= 10) document.getElementById('pull-s1').classList.add('done');
+  if (S.pullFree >= 10) {
+    document.getElementById('pull-s2').classList.add('done');
+    celebrate('🔥','ughhh FINALLY!','10 unassisted pullups. You are literally a superwoman. Loves that for you!');
+  }
+  updateFitDash();
+  toast('Pullups saved!');
+}
+
+window.updateFitDash = function() {
+  var plankPct = Math.min(100, Math.round((S.plankBest/180)*100));
+  var pushPct = Math.min(100, Math.round(((S.pushBent + S.pushFull)/(20+20))*100));
+  var pullPct = Math.min(100, Math.round(((S.pullSupport + S.pullFree)/(10+10))*100));
+  var avg = Math.round((plankPct+pushPct+pullPct)/3);
+  document.getElementById('h-fit-pct').textContent = avg+'%';
+  document.getElementById('h-fit-bar').style.width = avg+'%';
+}
+
+// Finance
+window.calculateRent = function() {
+  var paid = parseInt(document.getElementById('rent-input').value) || 9000;
+  S.rentPaid = paid;
+  save();
+  var diff = 9000 - paid;
+  var msgEl = document.getElementById('rent-message');
+  var funEl = document.getElementById('fun-message');
+  document.getElementById('budget-rent').textContent = '₹' + paid.toLocaleString('en-IN');
+  funEl.classList.remove('show');
+  if (diff > 0) {
+    msgEl.className = 'rent-message positive';
+    msgEl.textContent = 'Electricity was nice this month! ₹' + diff.toLocaleString('en-IN') + ' saved on rent. got it! 🌻';
+    funEl.className = 'fun-message show';
+    funEl.textContent = 'ughhh yes! That extra ₹' + diff.toLocaleString('en-IN') + ' is ALL yours. Go eat something unhealthy you love. Or that cute thing you've been eyeing. You earned it, superwoman. 🧡';
+    S.flexPool += diff;
+    document.getElementById('flex-amt').textContent = S.flexPool.toLocaleString('en-IN');
+    document.getElementById('jar-flex').textContent = S.flexPool.toLocaleString('en-IN');
+  } else if (diff < 0) {
+    msgEl.className = 'rent-message negative';
+    msgEl.textContent = 'Electricity hit this month — ₹' + Math.abs(diff).toLocaleString('en-IN') + ' extra. Adjust flex pool accordingly.';
+    S.flexPool = Math.max(0, S.flexPool + diff);
+    document.getElementById('flex-amt').textContent = S.flexPool.toLocaleString('en-IN');
+  } else {
+    msgEl.className = 'rent-message neutral';
+    msgEl.textContent = 'Exactly ₹9,000. Rent sorted, legend. On track ✓';
+  }
+  save();
+  toast('Rent calculated!');
+}
+
+var selectedCat = 'Essentials';
+window.selectPill = function(cat) {
+  selectedCat = cat;
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  document.getElementById('pill-'+cat).classList.add('active');
+}
+
+window.addExpense = function() {
+  var what = document.getElementById('exp-what').value.trim();
+  var amt = parseInt(document.getElementById('exp-amt').value);
+  if (!what || !amt) { toast('fill both fields first!'); return; }
+  S.expenses.push({ what, amt, cat: selectedCat, date: new Date().toLocaleDateString('en-IN') });
+  if (selectedCat === 'Flex') S.flexPool = Math.max(0, S.flexPool - amt);
+  if (selectedCat === 'Savings') S.generalSaved += amt;
+  if (selectedCat === 'Trips') S.tripsSaved += amt;
+  save();
+  renderExpenses();
+  document.getElementById('exp-what').value = '';
+  document.getElementById('exp-amt').value = '';
+  toast('logged! 🌻');
+}
+
+window.renderExpenses = function() {
+  var list = document.getElementById('exp-list');
+  var recent = S.expenses.slice(-15).reverse();
+  if (!recent.length) { list.innerHTML = '<div class="empty-state">nothing yet — loves that for your wallet 🌻</div>'; return; }
+  list.innerHTML = recent.map(e => `<div class="exp-item"><div><div class="exp-name">${e.what}</div><div class="exp-meta">${e.cat} · ${e.date}</div></div><div class="exp-amt-neg">−₹${e.amt.toLocaleString('en-IN')}</div></div>`).join('');
+  document.getElementById('jar-gen').textContent = S.generalSaved.toLocaleString('en-IN');
+  document.getElementById('jar-trips').textContent = S.tripsSaved.toLocaleString('en-IN');
+  document.getElementById('jar-flex').textContent = S.flexPool.toLocaleString('en-IN');
+  document.getElementById('jar-gen-bar').style.width = Math.min(100, Math.round((S.generalSaved/72000)*100))+'%';
+  document.getElementById('jar-trips-bar').style.width = Math.min(100, Math.round((S.tripsSaved/27000)*100))+'%';
+  document.getElementById('h-saved').textContent = S.generalSaved.toLocaleString('en-IN');
+  var moLeft = ((72000-S.generalSaved)/5000).toFixed(1);
+  document.getElementById('jar-gen-months').textContent = moLeft;
+}
+
+// Courses
+window.setCourse = function(n, pct, status) {
+  S.courses[n-1] = pct;
+  save();
+  document.getElementById('c'+n+'-fill').style.width = pct+'%';
+  document.getElementById('c'+n+'-pct').textContent = pct+'% done';
+  document.querySelectorAll('#page-learning .course-card:nth-child('+(n+1)+') .step-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  var avg = Math.round(S.courses.reduce((a,b)=>a+b,0)/3);
+  document.getElementById('h-learn-pct').textContent = avg+'%';
+  document.getElementById('h-learn-bar').style.width = avg+'%';
+  if (pct === 100) celebrate('🎓','ughhh finally!','Course ' + n + ' done. You absolute legend. Superwoman. Loves that for you! 🌻');
+  else toast(status + ' 📚');
+}
+
+// French streak
+window.addStreak = function(type) {
+  var today = new Date().toDateString();
+  if (S.frenchDays && S.frenchDays.includes(today)) { toast('already counted today! 🔥'); return; }
+  S.frenchDays = S.frenchDays || [];
+  S.frenchDays.push(today);
+  S.frenchStreak = (S.frenchStreak||0) + 1;
+  save();
+  document.getElementById('french-count').textContent = S.frenchStreak;
+  renderStreakDots();
+  toast('Streak: ' + S.frenchStreak + ' days! 🔥');
+  if (S.frenchStreak === 30) celebrate('🇫🇷','ughhh finally!','30 day French streak. Superwoman. Absolutely loves that for you!');
+}
+
+window.renderStreakDots = function() {
+  var el = document.getElementById('french-dots');
+  var dots = '';
+  for (var i=0; i<21; i++) { dots += '<div class="streak-dot-item' + (i < S.frenchStreak ? ' filled' : '') + '">' + (i < S.frenchStreak ? '🔥' : '') + '</div>'; }
+  el.innerHTML = dots;
+}
+
+// Book
+window.saveBook = function() {
+  S.bookPages = Math.min(198, tapVals['book']);
+  save();
+  var pct = Math.round((S.bookPages/198)*100);
+  document.getElementById('book-fill').style.width = pct+'%';
+  document.getElementById('book-count').textContent = S.bookPages;
+  document.getElementById('book-pct').textContent = pct+'%';
+  toast('Reading progress saved 📖');
+  if (S.bookPages >= 198) celebrate('📖','ughhh finally!','The Secret — fully read. You manifested it, superwoman. Loves that!');
+}
+
+// Rubik
+window.setRubik = function(stage) {
+  S.rubikStage = stage;
+  save();
+  document.querySelectorAll('[id^="rb-"]').forEach((b,i) => b.classList.toggle('active', i < stage));
+  var icons = ['🔲','🟨','🟧','🟦','🟩','🏆'];
+  document.getElementById('rubik-icon').textContent = icons[stage];
+  if (stage === 5) celebrate('🎲','GOT IT!','Rubik\'s cube SOLVED. Legend. Absolute superwoman energy. 🌻');
+  else toast(['','just starting — legend!','one face done! got it!','two faces! superwoman!','so close!'][stage]);
+}
+
+// Habits
+window.toggleHabit = function(id) {
+  var today = new Date().toDateString();
+  if (!S.habitDone[id]) S.habitDone[id] = {};
+  var wasDone = S.habitDone[id][today];
+  S.habitDone[id][today] = !wasDone;
+  if (!wasDone) { S.habitStreaks[id] = (S.habitStreaks[id]||0) + 1; }
+  else { S.habitStreaks[id] = Math.max(0, (S.habitStreaks[id]||1)-1); }
+  save();
+  var el = document.getElementById(id+'-check');
+  el.classList.toggle('done', !wasDone);
+  el.textContent = !wasDone ? '✓' : '';
+  document.getElementById(id+'-streak').textContent = S.habitStreaks[id]||0;
+  var best = Math.max(...Object.values(S.habitStreaks));
+  document.getElementById('h-streak').textContent = best || 0;
+  if (!wasDone) toast('done! 🌻 streak: ' + S.habitStreaks[id]);
+  if (S.habitStreaks[id] === 30) celebrate('🔥','30 day streak!','You are a superwoman. Loves that for you!');
+}
+
+window.addHabit = function() {
+  var name = document.getElementById('new-habit').value.trim();
+  if (!name) return;
+  S.customHabits.push({ name, id: 'c'+Date.now() });
+  save();
+  renderCustomHabits();
+  document.getElementById('new-habit').value = '';
+  toast('habit added! 🌻');
+}
+
+window.renderCustomHabits = function() {
+  var container = document.getElementById('custom-habit-list');
+  container.innerHTML = S.customHabits.map(h => {
+    var today = new Date().toDateString();
+    var done = S.habitDone[h.id] && S.habitDone[h.id][today];
+    return `<div class="habit-row" style="margin-top:8px"><div class="habit-info"><div class="habit-title">${h.name}</div><div class="habit-streak"><span id="${h.id}-streak">${S.habitStreaks[h.id]||0}</span> day streak</div></div><div class="check-circle ${done?'done':''}" id="${h.id}-check" onclick="toggleCustomHabit('${h.id}')">${done?'✓':''}</div></div>`;
+  }).join('');
+}
+
+window.toggleCustomHabit = function(id) {
+  var today = new Date().toDateString();
+  if (!S.habitDone[id]) S.habitDone[id] = {};
+  var wasDone = S.habitDone[id][today];
+  S.habitDone[id][today] = !wasDone;
+  if (!wasDone) S.habitStreaks[id] = (S.habitStreaks[id]||0)+1;
+  else S.habitStreaks[id] = Math.max(0,(S.habitStreaks[id]||1)-1);
+  save();
+  var el = document.getElementById(id+'-check');
+  if (el) { el.classList.toggle('done',!wasDone); el.textContent = !wasDone?'✓':''; }
+  var sl = document.getElementById(id+'-streak');
+  if (sl) sl.textContent = S.habitStreaks[id]||0;
+  toast(!wasDone ? 'done! 🌻' : 'unchecked');
+}
+
+// Email
+window.sendEmail = function() {
+  var plankM = Math.floor(S.plankBest/60), plankS = S.plankBest%60;
+  var sub = 'Life OS update — ' + new Date().toLocaleDateString('en-IN');
+  var body = 'Hey superwoman! Here\'s your update:%0A%0A';
+  body += 'FITNESS%0APlank best: ' + plankM + ':' + (plankS<10?'0':'') + plankS + ' (target 3:00)%0A';
+  body += 'Pushups bent: ' + S.pushBent + '/20, full: ' + S.pushFull + '/20%0A';
+  body += 'Pullups support: ' + S.pullSupport + '/10, free: ' + S.pullFree + '/10%0A%0A';
+  body += 'FINANCE%0ATotal saved: Rs ' + S.generalSaved.toLocaleString('en-IN') + ' of Rs 72,000%0A';
+  body += 'Trips fund: Rs ' + S.tripsSaved.toLocaleString('en-IN') + '%0AFlex pool: Rs ' + S.flexPool.toLocaleString('en-IN') + '%0A%0A';
+  body += 'LEARNING%0AFrench streak: ' + S.frenchStreak + ' days%0A';
+  body += 'The Secret: ' + S.bookPages + '/198 pages%0ARubik: stage ' + S.rubikStage + '/5%0A%0A';
+  body += 'Courses: ' + S.courses.map((c,i)=>['Small','Medium','High value'][i]+' '+c+'%25').join(', ') + '%0A%0A';
+  body += 'loves that for you. keep going! 🌻';
+  window.location.href = 'mailto:anyotashi@gmail.com?subject=' + encodeURIComponent(sub) + '&body=' + body;
+  toast('opening email... 💌');
+}
+
+// Init
+window.init = function() {
+  renderExpenses();
+  renderCustomHabits();
+  renderStreakDots();
+  updateFitDash();
+
+  // Restore plank
+  var pm=Math.floor(S.plankBest/60),ps=S.plankBest%60;
+  var plbl=pm+':'+(ps<10?'0':'')+ps;
+  document.getElementById('sw-best').textContent = plbl;
+  document.getElementById('plank-best-lbl').textContent = plbl;
+  document.getElementById('plank-bar').style.width = Math.min(100,Math.round((S.plankBest/180)*100))+'%';
+
+  // Restore taps
+  tapVals['push-bent'] = S.pushBent;
+  tapVals['push-full'] = S.pushFull;
+  tapVals['pull-support'] = S.pullSupport;
+  tapVals['pull-free'] = S.pullFree;
+  tapVals['book'] = S.bookPages;
+  document.getElementById('push-bent-val').textContent = S.pushBent;
+  document.getElementById('push-full-val').textContent = S.pushFull;
+  document.getElementById('pull-support-val').textContent = S.pullSupport;
+  document.getElementById('pull-free-val').textContent = S.pullFree;
+  document.getElementById('push-bent-now').textContent = S.pushBent;
+  document.getElementById('push-full-now').textContent = S.pushFull;
+  document.getElementById('pull-support-now').textContent = S.pullSupport;
+  document.getElementById('pull-free-now').textContent = S.pullFree;
+  document.getElementById('push-bent-bar').style.width = Math.min(100,Math.round((S.pushBent/20)*100))+'%';
+  document.getElementById('push-full-bar').style.width = Math.min(100,Math.round((S.pushFull/20)*100))+'%';
+  document.getElementById('pull-support-bar').style.width = Math.min(100,Math.round((S.pullSupport/10)*100))+'%';
+  document.getElementById('pull-free-bar').style.width = Math.min(100,Math.round((S.pullFree/10)*100))+'%';
+
+  // Restore book
+  document.getElementById('book-tap-val').textContent = S.bookPages;
+  document.getElementById('book-count').textContent = S.bookPages;
+  document.getElementById('book-pct').textContent = Math.round((S.bookPages/198)*100)+'%';
+  document.getElementById('book-fill').style.width = Math.round((S.bookPages/198)*100)+'%';
+
+  // Restore french
+  document.getElementById('french-count').textContent = S.frenchStreak||0;
+
+  // Restore rubik
+  var icons=['🔲','🟨','🟧','🟦','🟩','🏆'];
+  document.getElementById('rubik-icon').textContent = icons[S.rubikStage||0];
+  document.querySelectorAll('[id^="rb-"]').forEach((b,i) => b.classList.toggle('active',i<(S.rubikStage||0)));
+
+  // Restore courses
+  S.courses.forEach((v,i) => {
+    if(v){ document.getElementById('c'+(i+1)+'-fill').style.width=v+'%'; document.getElementById('c'+(i+1)+'-pct').textContent=v+'% done'; }
+  });
+  var avg=Math.round(S.courses.reduce((a,b)=>a+b,0)/3);
+  document.getElementById('h-learn-pct').textContent=avg+'%';
+  document.getElementById('h-learn-bar').style.width=avg+'%';
+
+  // Restore habits
+  var today=new Date().toDateString();
+  ['amma','gym','duo'].forEach(id=>{
+    if(S.habitDone[id]&&S.habitDone[id][today]){
+      var el=document.getElementById(id+'-check');
+      if(el){el.classList.add('done');el.textContent='✓';}
+    }
+    var sl=document.getElementById(id+'-streak');
+    if(sl) sl.textContent=S.habitStreaks[id]||0;
+  });
+  var best=Math.max(0,...Object.values(S.habitStreaks));
+  document.getElementById('h-streak').textContent=best||0;
+}
+
+init();
+</script>
+</body>
+</html>
