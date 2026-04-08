@@ -156,6 +156,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Epilogue',sans-serif;fon
   </div>
   <div class="ybar-track"><div class="ybar-fill"></div></div>
   <div class="ylabels"><span>Jan</span><span class="now">Apr ← you</span><span>Dec</span></div>
+  <div id="today-date" style="font-size:11px;color:var(--ink3);margin-top:4px;"></div>
 </div>
 <div class="nav">
   <button class="nav-btn active" data-pg="home">Home</button>
@@ -378,7 +379,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Epilogue',sans-serif;fon
 <script>
 (function(){
 'use strict';
-var S=JSON.parse(localStorage.getItem('lOS4')||'null')||{plankBest:120,pb:12,pf:0,pus:0,puf:0,expenses:[],cat:'Essentials',genSaved:13000,trips:0,flex:3000,frStreak:0,frDays:[],bkPages:0,rubik:0,courses:[0,0,0],habits:{},hStr:{amma:0,gym:0,duo:0},hDone:{},custom:[]};
+var S=JSON.parse(localStorage.getItem('lOS4')||'null')||{plankBest:120,pb:12,pf:0,pus:0,puf:0,expenses:[],cat:'Essentials',genSaved:10000,trips:3000,flex:3000,frStreak:0,frDays:[],bkPages:0,rubik:0,courses:[0,0,0],habits:{},hStr:{amma:0,gym:0,duo:0},hDone:{},custom:[]};
 var tv={pb:S.pb,pf:S.pf,pus:S.pus,puf:S.puf,bk:S.bkPages};
 var swOn=false,swSec=0,swInt=null;
 
@@ -606,6 +607,7 @@ document.getElementById('email-btn').addEventListener('click',function(){
 // INIT
 function init(){
   updFit();renderExp();renderCustom();renderFrDots();updJars();
+  document.getElementById('today-date').textContent = new Date().toLocaleDateString('en-IN', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
   // plank
   var pl=swFmt(S.plankBest);
   document.getElementById('sw-bl').textContent=pl;document.getElementById('plank-bl').textContent=pl;
