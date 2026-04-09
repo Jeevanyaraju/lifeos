@@ -656,13 +656,11 @@ document.getElementById('email-btn').addEventListener('click',function(){
   var c1n=localStorage.getItem('cname1')||'Small course';
   var c2n=localStorage.getItem('cname2')||'Medium course';
   var c3n=localStorage.getItem('cname3')||'High value course';
-  var subject='Life OS update — '+new Date().toLocaleDateString('en-IN');
+  var subject='You need to see this — '+new Date().toLocaleDateString('en-IN');
   var body=[
     "J's 2026 Vision Update",
     '',
     "Sharing this with you because you care for J — and so does she.",
-    '',
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━',
     '',
     '💪 FITNESS',
     'Plank best: '+pl+' (target 3:00)',
@@ -681,8 +679,6 @@ document.getElementById('email-btn').addEventListener('click',function(){
     c1n+': '+S.courses[0]+'%',
     c2n+': '+S.courses[1]+'%',
     c3n+': '+S.courses[2]+'%',
-    '',
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━',
     '',
     'She is showing up. Every single day.',
     'loves that for her. 🌻'
