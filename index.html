@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -291,7 +290,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Epilogue',sans-serif;fon
   <span class="slbl">savings jars</span>
   <div class="jar"><div class="jh"><div class="jn">General savings</div><div class="ja">₹<span id="j-gen">10,000</span></div></div><div class="jt"><div class="jf" id="jf-gen" style="width:14%"></div></div><div class="jsub">₹5,000/month · target ₹72,000</div></div>
   <div class="jar"><div class="jh"><div class="jn">Trips fund </div><div class="ja">₹<span id="j-trips">3,000</span></div></div><div class="jt"><div class="jf" id="jf-trips" style="width:11%"></div></div><div class="jsub">₹3,000/month · your next adventure</div></div>
-  <div class="jar"><div class="jh"><div class="jn">Flex pool</div><div class="ja">₹<span id="j-flex">3,000</span></div></div><div class="jt"><div class="jf" id="jf-flex" style="width:100%;background:var(--green)"></div></div><div class="jsub">unspent rolls over. enjoy it, superwoman.</div></div>
+  <div class="jar"><div class="jh"><div class="jn">Flex pool</div><div class="ja">₹<span id="j-flex">0</span></div></div><div class="jt"><div class="jf" id="jf-flex" style="width:100%;background:var(--green)"></div></div><div class="jsub">unspent rolls over. enjoy it, superwoman.</div></div>
 </div>
 
 <div class="page" id="page-learning">
@@ -407,7 +406,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Epilogue',sans-serif;fon
 <script>
 (function(){
 'use strict';
-var S=JSON.parse(localStorage.getItem('lOS4')||'null')||{plankBest:120,pb:12,pf:0,pus:0,puf:0,expenses:[],cat:'Essentials',genSaved:10000,trips:3000,flex:0,frStreak:0,frDays:[],bkPages:0,rubik:0,courses:[0,0,0],habits:{},hStr:{amma:0,gym:0,duo:0},hDone:{},custom:[]};
+var S=JSON.parse(localStorage.getItem('lOS4')||'null')||{plankBest:120,pb:12,pf:0,pus:0,puf:0,expenses:[],cat:'Essentials',genSaved:10000,trips:3000,flex:3000,frStreak:0,frDays:[],bkPages:0,rubik:0,courses:[0,0,0],habits:{},hStr:{amma:0,gym:0,duo:0},hDone:{},custom:[]};
 var tv={pb:S.pb,pf:S.pf,pus:S.pus,puf:S.puf,bk:S.bkPages};
 var swOn=false,swSec=0,swInt=null;
 
@@ -657,9 +656,9 @@ document.getElementById('email-btn').addEventListener('click',function(){
   var c1n=localStorage.getItem('cname1')||'Small course';
   var c2n=localStorage.getItem('cname2')||'Medium course';
   var c3n=localStorage.getItem('cname3')||'High value course';
-  var subject='(J's 2026 Vision Update: — '+new Date().toLocaleDateString('en-IN');
+  var subject='J's 2026 Vision — '+new Date().toLocaleDateString('en-IN');
   var body=[
-    'Sending you this because you care for J',
+    'Sharing you this since you care for J and so she',
     '',
     'FITNESS',
     'Plank best: '+pl+' (target 3:00)',
@@ -679,7 +678,7 @@ document.getElementById('email-btn').addEventListener('click',function(){
     c2n+': '+S.courses[1]+'%',
     c3n+': '+S.courses[2]+'%',
     '',
-    'loves that for you. keep going J 🌻'
+    'loves that for you. keep going J! 🌻'
   ].join('\n');
   var mailto='mailto:jeevanyaraju2@gmail.com,dhanushmd4021@gmail.com'
     +'?subject='+encodeURIComponent(subject)
