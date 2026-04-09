@@ -656,9 +656,9 @@ document.getElementById('email-btn').addEventListener('click',function(){
   var c1n=localStorage.getItem('cname1')||'Small course';
   var c2n=localStorage.getItem('cname2')||'Medium course';
   var c3n=localStorage.getItem('cname3')||'High value course';
-  var subject='J's 2026 Vision Update — '+new Date().toLocaleDateString('en-IN');
+  var subject='Life OS update — '+new Date().toLocaleDateString('en-IN');
   var body=[
-    'Sharing this to you because you care for J and so her',
+    'Hey superwoman! Your Life OS update:',
     '',
     'FITNESS',
     'Plank best: '+pl+' (target 3:00)',
@@ -678,7 +678,7 @@ document.getElementById('email-btn').addEventListener('click',function(){
     c2n+': '+S.courses[1]+'%',
     c3n+': '+S.courses[2]+'%',
     '',
-    'loves that for you. keep going! 🌻'
+    'loves that for you. keep going superwoman! 🌻'
   ].join('\n');
   var mailto='mailto:jeevanyaraju2@gmail.com,dhanushmd4021@gmail.com'
     +'?subject='+encodeURIComponent(subject)
