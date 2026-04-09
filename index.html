@@ -406,7 +406,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Epilogue',sans-serif;fon
 <script>
 (function(){
 'use strict';
-var S=JSON.parse(localStorage.getItem('lOS4')||'null')||{plankBest:120,pb:12,pf:0,pus:0,puf:0,expenses:[],cat:'Essentials',genSaved:10000,trips:3000,flex:3000,frStreak:0,frDays:[],bkPages:0,rubik:0,courses:[0,0,0],habits:{},hStr:{amma:0,gym:0,duo:0},hDone:{},custom:[]};
+var S=JSON.parse(localStorage.getItem('lOS4')||'null')||{plankBest:120,pb:12,pf:0,pus:0,puf:0,expenses:[],cat:'Essentials',genSaved:10000,trips:3000,flex:0,frStreak:0,frDays:[],bkPages:0,rubik:0,courses:[0,0,0],habits:{},hStr:{amma:0,gym:0,duo:0},hDone:{},custom:[]};
 var tv={pb:S.pb,pf:S.pf,pus:S.pus,puf:S.puf,bk:S.bkPages};
 var swOn=false,swSec=0,swInt=null;
 
@@ -658,27 +658,34 @@ document.getElementById('email-btn').addEventListener('click',function(){
   var c3n=localStorage.getItem('cname3')||'High value course';
   var subject='Life OS update — '+new Date().toLocaleDateString('en-IN');
   var body=[
-    'Hey superwoman! Your Life OS update:',
+    "J's 2026 Vision Update",
     '',
-    'FITNESS',
+    "Sharing this with you because you care for J — and so does she.",
+    '',
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+    '',
+    '💪 FITNESS',
     'Plank best: '+pl+' (target 3:00)',
-    'Pushups — bent knee: '+S.pb+'/20, full: '+S.pf+'/20',
-    'Pullups — support: '+S.pus+'/10, free: '+S.puf+'/10',
+    'Pushups — bent knee: '+S.pb+'/20 · full: '+S.pf+'/20',
+    'Pullups — support: '+S.pus+'/10 · unassisted: '+S.puf+'/10',
     '',
-    'FINANCE',
-    'General savings: Rs '+S.genSaved.toLocaleString('en-IN')+' of Rs 72,000',
-    'Trips fund: Rs '+S.trips.toLocaleString('en-IN'),
-    'Flex pool: Rs '+S.flex.toLocaleString('en-IN'),
+    '💰 FINANCE',
+    'General savings: ₹'+S.genSaved.toLocaleString('en-IN')+' of ₹72,000',
+    'Trips fund: ₹'+S.trips.toLocaleString('en-IN'),
+    'Flex pool: ₹'+S.flex.toLocaleString('en-IN'),
     '',
-    'LEARNING',
-    'French streak: '+S.frStreak+' days',
-    'The Secret: '+S.bkPages+'/198 pages',
-    'Rubik cube: stage '+S.rubik+'/5',
+    '📚 LEARNING',
+    'French streak: '+S.frStreak+' days 🔥',
+    'The Secret: '+S.bkPages+' of 198 pages',
+    'Rubik cube: stage '+S.rubik+' of 5',
     c1n+': '+S.courses[0]+'%',
     c2n+': '+S.courses[1]+'%',
     c3n+': '+S.courses[2]+'%',
     '',
-    'loves that for you. keep going superwoman! 🌻'
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+    '',
+    'She is showing up. Every single day.',
+    'loves that for her. 🌻'
   ].join('\n');
   var mailto='mailto:jeevanyaraju2@gmail.com,dhanushmd4021@gmail.com'
     +'?subject='+encodeURIComponent(subject)
