@@ -407,7 +407,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Epilogue',sans-serif;fon
 <script>
 (function(){
 'use strict';
-var S=JSON.parse(localStorage.getItem('lOS4')||'null')||{plankBest:120,pb:12,pf:0,pus:0,puf:0,expenses:[],cat:'Essentials',genSaved:10000,trips:3000,flex:3000,frStreak:0,frDays:[],bkPages:0,rubik:0,courses:[0,0,0],habits:{},hStr:{amma:0,gym:0,duo:0},hDone:{},custom:[]};
+var S=JSON.parse(localStorage.getItem('lOS4')||'null')||{plankBest:120,pb:12,pf:0,pus:0,puf:0,expenses:[],cat:'Essentials',genSaved:10000,trips:3000,flex:0,frStreak:0,frDays:[],bkPages:0,rubik:0,courses:[0,0,0],habits:{},hStr:{amma:0,gym:0,duo:0},hDone:{},custom:[]};
 var tv={pb:S.pb,pf:S.pf,pus:S.pus,puf:S.puf,bk:S.bkPages};
 var swOn=false,swSec=0,swInt=null;
 
@@ -659,7 +659,7 @@ document.getElementById('email-btn').addEventListener('click',function(){
   var c3n=localStorage.getItem('cname3')||'High value course';
   var subject='Life OS update — '+new Date().toLocaleDateString('en-IN');
   var body=[
-    'Hey superwoman! Your Life OS update:',
+    'Sending you this because you care for J (2026 Vision Update:)',
     '',
     'FITNESS',
     'Plank best: '+pl+' (target 3:00)',
@@ -679,7 +679,7 @@ document.getElementById('email-btn').addEventListener('click',function(){
     c2n+': '+S.courses[1]+'%',
     c3n+': '+S.courses[2]+'%',
     '',
-    'loves that for you. keep going superwoman! 🌻'
+    'loves that for you. keep going J 🌻'
   ].join('\n');
   var mailto='mailto:jeevanyaraju2@gmail.com,dhanushmd4021@gmail.com'
     +'?subject='+encodeURIComponent(subject)
