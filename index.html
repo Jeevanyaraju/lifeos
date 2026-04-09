@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -140,6 +141,11 @@ body{background:var(--bg);color:var(--ink);font-family:'Epilogue',sans-serif;fon
 .ebtn{width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:50px;padding:14px;font-family:'Epilogue',sans-serif;font-size:13px;color:var(--ink);cursor:pointer;margin-top:20px;}
 .ebtn:active{background:var(--bg3);}
 .empty{text-align:center;padding:28px;color:var(--ink3);font-size:13px;}
+.cname-row{display:flex;gap:8px;margin-bottom:10px;align-items:center;}
+.cname-inp{flex:1;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:9px 14px;color:var(--ink);font-family:'Epilogue',sans-serif;font-size:13px;outline:none;margin-bottom:0;}
+.cname-inp:focus{border-color:var(--ink);}
+.cname-save{background:var(--ink);color:var(--bg);border:none;border-radius:50px;padding:9px 18px;font-family:'Epilogue',sans-serif;font-size:12px;cursor:pointer;white-space:nowrap;}
+.cname-edit{font-size:11px;color:var(--ink3);cursor:pointer;text-decoration:underline;margin-bottom:10px;display:inline-block;}
 </style>
 </head>
 <body>
@@ -152,10 +158,10 @@ body{background:var(--bg);color:var(--ink);font-family:'Epilogue',sans-serif;fon
 <div class="header">
   <div class="header-top">
     <div class="header-name">Hey, <span>Jeez</span> </div>
-    <div class="year-chip">Apr 2025 · 9M left</div>
+    <div class="year-chip" id="year-chip">Apr 2025 · 9M left</div>
   </div>
-  <div class="ybar-track"><div class="ybar-fill"></div></div>
-  <div class="ylabels"><span>Jan</span><span class="now">Apr ← you</span><span>Dec</span></div>
+  <div class="ybar-track"><div class="ybar-fill" id="ybar-fill"></div></div>
+  <div class="ylabels"><span>Jan</span><span class="now" id="month-now">Apr ← you</span><span>Dec</span></div>
   <div id="today-date" style="font-size:11px;color:var(--ink3);margin-top:4px;"></div>
 </div>
 <div class="nav">
@@ -171,7 +177,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Epilogue',sans-serif;fon
   <div class="card-y">
     <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink2);margin-bottom:6px">your 2025</div>
     <div class="bgtxt">Becoming the woman my past self thought was fictional.</div>
-    <div class="bgsub">plot twist: she’s real. </div>
+    <div class="bgsub">plot twist: she's real. </div>
   </div>
   <div class="grid2">
     <div class="sc"><div class="sc-lbl">Total saved</div><div class="sc-val">₹<span id="h-saved">13,000</span></div><div class="sc-sub">of ₹72,000</div></div>
@@ -283,16 +289,23 @@ body{background:var(--bg);color:var(--ink);font-family:'Epilogue',sans-serif;fon
   <span class="slbl">recent expenses</span>
   <div class="el" id="exp-list"><div class="empty">nothing yet - loves that for your wallet 🌻</div></div>
   <span class="slbl">savings jars</span>
-  <div class="jar"><div class="jh"><div class="jn">General savings</div><div class="ja">₹<span id="j-gen">13,000</span></div></div><div class="jt"><div class="jf" id="jf-gen" style="width:18%"></div></div><div class="jsub">₹5,000/month · target ₹72,000</div></div>
-  <div class="jar"><div class="jh"><div class="jn">Trips fund </div><div class="ja">₹<span id="j-trips">0</span></div></div><div class="jt"><div class="jf" id="jf-trips" style="width:0%"></div></div><div class="jsub">₹3,000/month · your next adventure</div></div>
+  <div class="jar"><div class="jh"><div class="jn">General savings</div><div class="ja">₹<span id="j-gen">10,000</span></div></div><div class="jt"><div class="jf" id="jf-gen" style="width:14%"></div></div><div class="jsub">₹5,000/month · target ₹72,000</div></div>
+  <div class="jar"><div class="jh"><div class="jn">Trips fund </div><div class="ja">₹<span id="j-trips">3,000</span></div></div><div class="jt"><div class="jf" id="jf-trips" style="width:11%"></div></div><div class="jsub">₹3,000/month · your next adventure</div></div>
   <div class="jar"><div class="jh"><div class="jn">Flex pool</div><div class="ja">₹<span id="j-flex">3,000</span></div></div><div class="jt"><div class="jf" id="jf-flex" style="width:100%;background:var(--green)"></div></div><div class="jsub">unspent rolls over. enjoy it, superwoman.</div></div>
 </div>
 
 <div class="page" id="page-learning">
   <span class="slbl">courses</span>
+
   <div class="cc">
     <div class="cbdg">Small course</div>
-    <div class="ctit">Course TBD — add when ready</div>
+    <div class="cname-row" id="c1-inp-row">
+      <input class="cname-inp" id="c1-inp" placeholder="Enter course name...">
+      <button class="cname-save" id="c1-save">save</button>
+    </div>
+    <div class="ctit" id="c1-title" style="display:none"></div>
+    <span class="cname-edit" id="c1-edit" style="display:none">edit name</span>
+    <div style="font-size:12px;color:var(--ink3);margin-bottom:10px">Target: finish by June · ~2 hrs/week</div>
     <div class="ctrk"><div class="cfl" id="c1f" style="width:0%"></div></div>
     <div class="cft"><span id="c1p">0% done</span><span>end of year</span></div>
     <div class="ss" data-cn="1">
@@ -301,9 +314,16 @@ body{background:var(--bg);color:var(--ink);font-family:'Epilogue',sans-serif;fon
       <div class="stpbtn" data-pct="100">done! 🎉</div>
     </div>
   </div>
+
   <div class="cc">
     <div class="cbdg">Medium course</div>
-    <div class="ctit">Course TBD — add when ready</div>
+    <div class="cname-row" id="c2-inp-row">
+      <input class="cname-inp" id="c2-inp" placeholder="Enter course name...">
+      <button class="cname-save" id="c2-save">save</button>
+    </div>
+    <div class="ctit" id="c2-title" style="display:none"></div>
+    <span class="cname-edit" id="c2-edit" style="display:none">edit name</span>
+    <div style="font-size:12px;color:var(--ink3);margin-bottom:10px">Target: finish by Sep · ~3 hrs/week</div>
     <div class="ctrk"><div class="cfl" id="c2f" style="width:0%"></div></div>
     <div class="cft"><span id="c2p">0% done</span><span>end of year</span></div>
     <div class="ss" data-cn="2">
@@ -312,9 +332,16 @@ body{background:var(--bg);color:var(--ink);font-family:'Epilogue',sans-serif;fon
       <div class="stpbtn" data-pct="100">done! 🎉</div>
     </div>
   </div>
+
   <div class="cc">
     <div class="cbdg" style="background:rgba(240,217,107,0.5);color:var(--finance)">High value ✦</div>
-    <div class="ctit">Course TBD — add when ready</div>
+    <div class="cname-row" id="c3-inp-row">
+      <input class="cname-inp" id="c3-inp" placeholder="Enter course name...">
+      <button class="cname-save" id="c3-save">save</button>
+    </div>
+    <div class="ctit" id="c3-title" style="display:none"></div>
+    <span class="cname-edit" id="c3-edit" style="display:none">edit name</span>
+    <div style="font-size:12px;color:var(--ink3);margin-bottom:10px">Target: finish by Dec · ~5 hrs/week</div>
     <div class="ctrk"><div class="cfl" id="c3f" style="width:0%;background:var(--finance)"></div></div>
     <div class="cft"><span id="c3p">0% done</span><span>end of year</span></div>
     <div class="ss" data-cn="3">
@@ -323,6 +350,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Epilogue',sans-serif;fon
       <div class="stpbtn" data-pct="100">done! 🎉</div>
     </div>
   </div>
+
   <span class="slbl">french on duolingo 🇫🇷</span>
   <div class="skcard">
     <div class="skhdr">
@@ -387,7 +415,7 @@ function sv(){localStorage.setItem('lOS4',JSON.stringify(S));}
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2500);}
 function celebrate(e,ti,su){document.getElementById('cel-e').textContent=e;document.getElementById('cel-t').textContent=ti;document.getElementById('cel-s').textContent=su;document.getElementById('cel').classList.add('show');}
 
-// NAV — key fix: use event delegation
+// NAV
 document.querySelector('.nav').addEventListener('click',function(e){
   var btn=e.target.closest('.nav-btn');
   if(!btn) return;
@@ -413,7 +441,7 @@ document.getElementById('sw-sav').addEventListener('click',function(){
   else toast('Keep going! Best: '+swFmt(S.plankBest));
 });
 
-// Tap btns — delegation
+// Tap btns
 document.body.addEventListener('click',function(e){
   var btn=e.target.closest('.tbtn');
   if(!btn) return;
@@ -496,7 +524,35 @@ function updJars(){
   document.getElementById('h-saved').textContent=S.genSaved.toLocaleString('en-IN');
 }
 
-// Courses — delegation
+// Course name saving
+function setupCourseName(n){
+  var saved=localStorage.getItem('cname'+n);
+  if(saved){
+    document.getElementById('c'+n+'-inp-row').style.display='none';
+    document.getElementById('c'+n+'-title').textContent=saved;
+    document.getElementById('c'+n+'-title').style.display='block';
+    document.getElementById('c'+n+'-edit').style.display='inline-block';
+  }
+  document.getElementById('c'+n+'-save').addEventListener('click',function(){
+    var name=document.getElementById('c'+n+'-inp').value.trim();
+    if(!name){toast('enter a course name first!');return;}
+    localStorage.setItem('cname'+n,name);
+    document.getElementById('c'+n+'-inp-row').style.display='none';
+    document.getElementById('c'+n+'-title').textContent=name;
+    document.getElementById('c'+n+'-title').style.display='block';
+    document.getElementById('c'+n+'-edit').style.display='inline-block';
+    toast('Course name saved! 🌻');
+  });
+  document.getElementById('c'+n+'-edit').addEventListener('click',function(){
+    document.getElementById('c'+n+'-inp').value=localStorage.getItem('cname'+n)||'';
+    document.getElementById('c'+n+'-inp-row').style.display='flex';
+    document.getElementById('c'+n+'-title').style.display='none';
+    document.getElementById('c'+n+'-edit').style.display='none';
+  });
+}
+[1,2,3].forEach(function(n){setupCourseName(n);});
+
+// Courses progress
 document.querySelector('#page-learning').addEventListener('click',function(e){
   var btn=e.target.closest('.stpbtn[data-pct]');
   if(!btn) return;
@@ -551,7 +607,7 @@ document.getElementById('save-book').addEventListener('click',function(){
   if(S.bkPages>=198)celebrate('📖','ughhh finally!','The Secret — fully read. You manifested it, superwoman 🌻');
 });
 
-// Habits — delegation
+// Habits
 function doHabit(id){
   var td=new Date().toDateString();
   if(!S.hDone[id])S.hDone[id]={};
@@ -595,24 +651,109 @@ function renderCustom(){
   }).join('');
 }
 
-// Email
+// EMAIL — fixed, opens Gmail properly
 document.getElementById('email-btn').addEventListener('click',function(){
   var pl=swFmt(S.plankBest);
-  var sub='Life OS update — '+new Date().toLocaleDateString('en-IN');
-  var b='Hey superwoman! Your update:%0A%0AFITNESS%0APlank best: '+pl+'%0APushups bent: '+S.pb+'/20, full: '+S.pf+'/20%0APullups support: '+S.pus+'/10, free: '+S.puf+'/10%0A%0AFINANCE%0ASaved: Rs '+S.genSaved.toLocaleString('en-IN')+' of Rs 72,000%0ATrips: Rs '+S.trips.toLocaleString('en-IN')+'%0AFlex: Rs '+S.flex.toLocaleString('en-IN')+'%0A%0ALEARNING%0AFrench streak: '+S.frStreak+' days%0AThe Secret: '+S.bkPages+'/198 pages%0ARubik: stage '+S.rubik+'/5%0ACourses: '+S.courses.map(function(c,i){return ['Small','Medium','High'][i]+' '+c+'%25';}).join(', ')+'%0A%0Aloves that for you superwoman! keep going 🌻';
-  window.location.href='mailto:jeevanyaraju2@gmail.com?subject='+encodeURIComponent(sub)+'&body='+b;
+  var c1n=localStorage.getItem('cname1')||'Small course';
+  var c2n=localStorage.getItem('cname2')||'Medium course';
+  var c3n=localStorage.getItem('cname3')||'High value course';
+  var subject='Life OS update — '+new Date().toLocaleDateString('en-IN');
+  var body=[
+    'Hey superwoman! Your Life OS update:',
+    '',
+    'FITNESS',
+    'Plank best: '+pl+' (target 3:00)',
+    'Pushups — bent knee: '+S.pb+'/20, full: '+S.pf+'/20',
+    'Pullups — support: '+S.pus+'/10, free: '+S.puf+'/10',
+    '',
+    'FINANCE',
+    'General savings: Rs '+S.genSaved.toLocaleString('en-IN')+' of Rs 72,000',
+    'Trips fund: Rs '+S.trips.toLocaleString('en-IN'),
+    'Flex pool: Rs '+S.flex.toLocaleString('en-IN'),
+    '',
+    'LEARNING',
+    'French streak: '+S.frStreak+' days',
+    'The Secret: '+S.bkPages+'/198 pages',
+    'Rubik cube: stage '+S.rubik+'/5',
+    c1n+': '+S.courses[0]+'%',
+    c2n+': '+S.courses[1]+'%',
+    c3n+': '+S.courses[2]+'%',
+    '',
+    'loves that for you. keep going superwoman! 🌻'
+  ].join('\n');
+  var mailto='mailto:jeevanyaraju2@gmail.com,dhanushmd4021@gmail.com'
+    +'?subject='+encodeURIComponent(subject)
+    +'&body='+encodeURIComponent(body);
+  window.open(mailto,'_self');
   toast('opening email 💌');
 });
+
+// SPECIAL DAY POPUPS
+function checkSpecialDay(){
+  var today=new Date();
+  var month=today.getMonth()+1;
+  var day=today.getDate();
+  var startOfYear=new Date(today.getFullYear(),0,1);
+  var dayOfYear=Math.floor((today-startOfYear)/(1000*60*60*24))+1;
+  var msg=null;
+
+  if(month===11&&day===17){
+    msg={e:'🎂',t:'Happy Birthday superwoman!',s:'Nov 17 — YOUR day. loves that for you. You deserve everything good this year. Jeez, you are a legend. 🌻'};
+  } else if(dayOfYear===100){
+    msg={e:'💯',t:'100 days into the year!',s:'ughhh 100 days done. Look how far you\'ve come. Legend. Keep going superwoman 🔥'};
+  } else if(dayOfYear===182||dayOfYear===183){
+    msg={e:'🌗',t:'Half a year done!',s:'6 whole months in. Halfway through. You are showing up every single day. Superwoman. loves that for you 🌻'};
+  } else if(dayOfYear===274||dayOfYear===275){
+    msg={e:'🍂',t:'9 months in!',s:'Three quarters of the year done. You are not the same person who started in January. Legend. 🔥'};
+  } else if(month===1&&day===1){
+    msg={e:'🎆',t:'New Year superwoman!',s:'A whole new year. Fresh start. You\'ve got this. Legend mode: ON 🌟'};
+  } else if(month===12&&day===31){
+    msg={e:'🎊',t:'Last day of the year!',s:'You made it through the whole year superwoman. loves that for you SO much 🌻'};
+  } else if(month===1&&day===14){
+    msg={e:'🌾',t:'Happy Pongal!',s:'Pongal O Pongal! Wishing you sweetness and abundance this season superwoman 🌻'};
+  } else if(month===10&&day===2){
+    msg={e:'✨',t:'Happy Gandhi Jayanti!',s:'A day of reflection. You are doing great things, superwoman. loves that for you.'};
+  }
+
+  if(msg){
+    var lastSeen=localStorage.getItem('specialDay');
+    var todayStr=today.toDateString();
+    if(lastSeen!==todayStr){
+      setTimeout(function(){
+        celebrate(msg.e,msg.t,msg.s);
+        localStorage.setItem('specialDay',todayStr);
+      },1500);
+    }
+  }
+}
 
 // INIT
 function init(){
   updFit();renderExp();renderCustom();renderFrDots();updJars();
-  document.getElementById('today-date').textContent = new Date().toLocaleDateString('en-IN', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
-  // plank
+
+  // Live date display
+  var now=new Date();
+  document.getElementById('today-date').textContent=now.toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+  // Dynamic year progress bar
+  var startOfYear=new Date(now.getFullYear(),0,1);
+  var endOfYear=new Date(now.getFullYear(),11,31);
+  var yearPct=Math.round(((now-startOfYear)/(endOfYear-startOfYear))*100);
+  document.getElementById('ybar-fill').style.width=yearPct+'%';
+
+  // Dynamic header chip
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var monthName=months[now.getMonth()];
+  var monthsLeft=12-now.getMonth()-1;
+  document.getElementById('year-chip').textContent=monthName+' '+now.getFullYear()+' · '+monthsLeft+'M left';
+  document.getElementById('month-now').textContent=monthName+' \u2190 you';
+
+  // Plank
   var pl=swFmt(S.plankBest);
   document.getElementById('sw-bl').textContent=pl;document.getElementById('plank-bl').textContent=pl;
   document.getElementById('plank-bar').style.width=Math.min(100,Math.round((S.plankBest/180)*100))+'%';
-  // push/pull vals
+
+  // Push/pull
   ['pb','pf','pus','puf'].forEach(function(k){var el=document.getElementById(k+'-v');if(el)el.textContent=tv[k];});
   document.getElementById('pb-now').textContent=S.pb;document.getElementById('pf-now').textContent=S.pf;
   document.getElementById('pus-now').textContent=S.pus;document.getElementById('puf-now').textContent=S.puf;
@@ -624,28 +765,48 @@ function init(){
   if(S.pf>=20)document.getElementById('ps2').classList.add('done');
   if(S.pus>=10)document.getElementById('pu1').classList.add('done');
   if(S.puf>=10)document.getElementById('pu2').classList.add('done');
-  // book
+
+  // Book
   document.getElementById('bk-v').textContent=S.bkPages;tv.bk=S.bkPages;
   document.getElementById('bk-cnt').textContent=S.bkPages;
   document.getElementById('bk-pct').textContent=Math.round((S.bkPages/198)*100)+'%';
   document.getElementById('bk-bar').style.width=Math.round((S.bkPages/198)*100)+'%';
-  // french
+
+  // French
   document.getElementById('fr-cnt').textContent=S.frStreak||0;
-  // rubik
+
+  // Rubik
   var icons=['🔲','🟨','🟧','🟦','🟩','🏆'];
   document.getElementById('rub-icon').textContent=icons[S.rubik||0];
   document.querySelectorAll('[data-rub]').forEach(function(b,i){b.classList.toggle('active',i<(S.rubik||0));});
-  // courses
-  S.courses.forEach(function(v,i){document.getElementById('c'+(i+1)+'f').style.width=v+'%';document.getElementById('c'+(i+1)+'p').textContent=v+'% done';});
+
+  // Courses progress restore
+  S.courses.forEach(function(v,i){
+    document.getElementById('c'+(i+1)+'f').style.width=v+'%';
+    document.getElementById('c'+(i+1)+'p').textContent=v+'% done';
+    if(v>0){
+      var grp=document.querySelector('.ss[data-cn="'+(i+1)+'"]');
+      if(grp){
+        grp.querySelectorAll('.stpbtn').forEach(function(b){
+          if(parseInt(b.getAttribute('data-pct'))===v)b.classList.add('active');
+        });
+      }
+    }
+  });
   var avg=Math.round(S.courses.reduce(function(a,b){return a+b;},0)/3);
-  document.getElementById('h-learn-pct').textContent=avg+'%';document.getElementById('h-learn-bar').style.width=avg+'%';
-  // habits
+  document.getElementById('h-learn-pct').textContent=avg+'%';
+  document.getElementById('h-learn-bar').style.width=avg+'%';
+
+  // Habits
   var td=new Date().toDateString();
   ['amma','gym','duo'].forEach(function(id){
     if(S.hDone[id]&&S.hDone[id][td]){var el=document.getElementById(id+'-c');if(el){el.classList.add('done');el.textContent='✓';}}
     var sl=document.getElementById(id+'-s');if(sl)sl.textContent=S.hStr[id]||0;
   });
   updBestStreak();
+
+  // Check special days last
+  checkSpecialDay();
 }
 init();
 })();
