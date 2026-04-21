@@ -811,6 +811,36 @@ function init(){
   checkSpecialDay();
 }
 init();
+// Auto-log to Google Sheet on open — once per day
+(function autoLog(){
+  var todayStr = new Date().toLocaleDateString('en-IN');
+  var lastLogged = localStorage.getItem('lastLogged');
+  var SHEET_URL = 'https://script.google.com/macros/s/AKfycbxWmU5L-t-XvsTghzlD8uz_JlELr8F6jo4PwWUhj-u5KHfaMMXv8jmzLdehEfo8cVgh7A/exec';
+
+  // Always log on open (script handles deduplication)
+  fetch(SHEET_URL, {
+    method: 'POST',
+    body: JSON.stringify({
+      date: todayStr,
+      plank: swFmt(S.plankBest),
+      pushBent: S.pb,
+      pushFull: S.pf,
+      pullSup: S.pus,
+      pullFree: S.puf,
+      genSaved: S.genSaved,
+      trips: S.trips,
+      flex: S.flex,
+      frStreak: S.frStreak,
+      bookPages: S.bkPages,
+      rubik: S.rubik,
+      c1: S.courses[0],
+      c2: S.courses[1],
+      c3: S.courses[2]
+    })
+  }).catch(function(){});
+
+  localStorage.setItem('lastLogged', todayStr);
+})();
 })();
 </script>
 </body>
