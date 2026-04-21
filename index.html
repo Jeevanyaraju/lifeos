@@ -820,6 +820,7 @@ init();
   // Always log on open (script handles deduplication)
   fetch(SHEET_URL, {
     method: 'POST',
+    mode: 'no-cors',
     body: JSON.stringify({
       date: todayStr,
       plank: swFmt(S.plankBest),
